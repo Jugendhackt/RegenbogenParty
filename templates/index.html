@@ -1,13 +1,20 @@
+<!-- / -->
+
+
 <html>
 
-   <head>
-      <script type = "text/javascript"
-         src = "{{ url_for('static', filename = 'index.js') }}" ></script>
-       <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}"/>
-   </head>
+<head>
+    <title>Regenbogen Party</title>
 
-   <body>
-      <input type = "button" onclick = "sayHello()" value = "Say Hello" />
-   </body>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'index.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}" />
+</head>
+
+<body>
+    <!--<input type = "button" onclick = "sayHello()" value = "Say Hello" />-->
+    <!-- should these be buttons or links? -->
+    <input type="button" value="Join Room" /> <!-- Open a QR Reader (app? web page?) -->
+    <input type="button" value="Create Room" /> <!-- Go to creation room -->
+</body>
 
 </html>
