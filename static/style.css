@@ -1,1 +1,17 @@
-lol
+:root {
+    --accent: blue;
+}
+
+
+.button-link {
+    background-color: var(--accent);
+    color: white;
+    border-radius: 3px;
+    border: 1px solid var(--accent);
+    
+}
+
+.button-link:hover {
+    background-color: white;
+    color: var(--accent);
+}

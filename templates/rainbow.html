@@ -5,6 +5,9 @@
 
 <head>
     <title>Regenbogen Party</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}" />
+
+    <!-- JS: if id missing redirect to /-->
 </head>
 
 <body>
@@ -12,7 +15,7 @@
     <input type="button" id="show_menu" /> <!-- onlcick: toggle show/hide menu -->
     <div id="menu">
         <!-- QR Code here -->
-        <!-- Leave room (back to /) here -->
+        <a class="button-link" href="/">Leave room</a><!-- Leave room (back to /) here -->
     </div>
 </body>
 
