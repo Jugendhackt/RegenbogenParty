@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit, send
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
+app.debug = True
 socketio = SocketIO(app)
 
 @app.route('/')
