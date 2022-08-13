@@ -1,6 +1,7 @@
 <!-- Hier ist bunt -->
 <!-- /rainbow/id -->
 
+<!Doctype html>
 <html>
 
 <head>
@@ -9,18 +10,18 @@
 
     <!-- JS: if id missing redirect to /-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'index.js') }}"></script>
 
 </head>
 
 <body>
-    <canvas id="canvas" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
-    <a class="round-link" href="">&uarr;</a> <!-- onlcick: toggle show/hide menu -->
+    <canvas id="drawspace"></canvas>
+    <a class="round-link" id="otherbutton" href="#" onclick="toggleMenu();" style="bottom: -1.3rem;">&uarr;</a> <!-- onlcick: toggle show/hide menu -->
     <div id="menu">
+        <a class="round-link" href="#" onclick="toggleMenu();" style="top: -1.5rem;">&uarr;</a> <!-- onlcick: toggle show/hide menu -->
         <!-- QR Code here -->
         <a class="button-link" href="/">Leave room</a><!-- Leave room (back to /) here -->
     </div>
 </body>
 
 </html>
-
-<script type="text/javascript" src="{{ url_for('static', filename = 'rainbow.js') }}"></script>
