@@ -2,6 +2,15 @@ const URL = window.location.href;
 const ROOM_ID = URL.split('?')[0].split('/').pop()
 
 
+function getNTPTime() {
+    $.data = function(success){
+        $.get("http://json-time.appspot.com/time.json?callback=?", function(response){
+            success(new Date(response.datetime));
+        }, "json");
+    };
+}
+
+
 // TODO: Error Handling
 
 // LightFuncs

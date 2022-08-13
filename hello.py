@@ -2,8 +2,24 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, send
 from apscheduler.schedulers.background import BackgroundScheduler
 
+import ntplib
+from time import ctime
+
+
+
 app = Flask(__name__)
 socketio = SocketIO(app)
+
+ntp = ntplib.NTPClient()
+roomStartTimes = dict()
+
+def getRoomStartTime(roomID):
+    if roomID in roomStartTimes:
+        return roomStartTimes[roomID]
+
+    response = ntp.request('europe.pool.ntp.org', version=3)
+    roomStartTimes[roomID] = response.tx_time
+
 
 @app.route('/')
 def index():
@@ -37,7 +53,11 @@ def on_leave(data):
 
 @socketio.on('connect')
 def test_connect():
+    startTime = getRoomStartTime('123')
+    print(startTime)
+
     toSend = {
+        'startTime': getRoomStartTime('123'),
         'frameCount': 0,
         'lightFuncData': {
             'identifier': 'constantColorCanvas',
@@ -46,9 +66,6 @@ def test_connect():
             }
         }
     }
-
-    if not scheduler.running:
-        scheduler.start()
 
     emit('update', toSend)
 
@@ -80,7 +97,7 @@ scheduler = BackgroundScheduler()
 job = scheduler.add_job(test_emit, 'interval', seconds=1)
 
 if __name__ == '__main__':
-    socketio.run(app, port=8080, host="0.0.0.0")
+    socketio.run(app, host='0.0.0.0')
     
 
     
