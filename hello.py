@@ -2,8 +2,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, send
 from apscheduler.schedulers.background import BackgroundScheduler
 
-import ntplib
-from time import ctime
+import time
 
 
 
@@ -11,20 +10,26 @@ app = Flask(__name__)
 #app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-ntp = ntplib.NTPClient()
 roomStartTimes = dict()
 
 def getRoomStartTime(roomID):
     if roomID in roomStartTimes:
         return roomStartTimes[roomID]
 
-    response = ntp.request('europe.pool.ntp.org', version=3)
-    roomStartTimes[roomID] = response.tx_time
+    roomStartTimes[roomID] = time.time()*1000
 
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/roomJoin')
+def roomJoin():
+    return render_template('roomJoin.html')
+
+@app.route('/roomCreate')
+def roomCreate():
+    return render_template('roomCreate.html')
 
 @app.route('/demo')
 def index1():
@@ -65,9 +70,9 @@ def test_connect():
         'startTime': getRoomStartTime('123'),
         'frameCount': 0,
         'lightFuncData': {
-            'identifier': 'constantColorCanvas',
+            'identifier': 'cycleColorCanvas',
             'params': {
-                'color': '#FF80FF'
+                'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
             }
         }
     }
@@ -80,11 +85,11 @@ def test_disconnect():
 
 @socketio.on('ntp_server')
 def test_connect():
-    recvTime = time.time()
+    recvTime = time.time()*1000
 
     toSend = {
         'recvTime': recvTime,
-        'sendTime':  time.time()
+        'sendTime':  time.time()*1000
     }
 
     emit('ntp_client', toSend)
@@ -96,9 +101,9 @@ def test_emit():
     toSend = {
         'frameCount': temp,
         'lightFuncData': {
-            'identifier': 'constantColorCanvas',
+            'identifier': 'cycleColorCanvas',
             'params': {
-                'color': 'hsl('+str(temp%360)+',100%, 50%)'
+                'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
             }
         }
     }

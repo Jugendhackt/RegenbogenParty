@@ -1,5 +1,5 @@
 window.onload = function() {
-    document.getElementById("otherbutton").style.visibility = "hidden";
+    //document.getElementById("otherbutton").style.visibility = "hidden";
 }
 function toggleMenu() {
     var menu = document.getElementById("menu");
