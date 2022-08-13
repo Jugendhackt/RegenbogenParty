@@ -1,0 +1,7 @@
+version: "2"
+
+services:
+  server:
+    image: "gcr.io/regenbogenparty/container:latest"
+    ports:
+      - 8080:8080
