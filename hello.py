@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.debug = True
-socketio = SocketIO(app, cors_allowed_origins="rainbow.jamo.app")
+socketio = SocketIO(app, cors_allowed_origins="https://rainbow.jamo.app")
 
 @app.route('/')
 def index():
