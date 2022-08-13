@@ -14,3 +14,9 @@
 ``source env/bin/activate`` 
 ### Setup
 ``pip3 install -r requirements.txt``
+
+## Install on Server
+``apt-get install nginx certbot docker.io docker-compose``
+- obtain certificate
+- Use nginx.conf as site config and adapt URL
+- paste into crontab ``* * * * * sh /root/update.sh``
