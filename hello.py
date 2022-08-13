@@ -56,6 +56,7 @@ def on_join(data):
     join_room(room)
     send("someone" + ' has entered the room.', to=room)
     emit("change", to=room)
+    print("new user")
 
 @socketio.on('newColor')
 def newColor(data):
