@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.debug = True
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 @app.route('/')
 def index():
@@ -82,6 +82,3 @@ job = scheduler.add_job(test_emit, 'interval', seconds=1)
 
 if __name__ == '__main__':
     socketio.run(app, port=8080, host="0.0.0.0")
-    
-
-    
