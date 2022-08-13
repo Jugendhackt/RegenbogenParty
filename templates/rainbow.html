@@ -8,10 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'style.css') }}" />
 
     <!-- JS: if id missing redirect to /-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-    <canvas id="drawspace"></canvas>
+    <canvas id="canvas" style="position: absolute; left: 0; top: 0; z-index: 0;"></canvas>
     <a class="round-link" href="">&uarr;</a> <!-- onlcick: toggle show/hide menu -->
     <div id="menu">
         <!-- QR Code here -->
@@ -20,3 +22,5 @@
 </body>
 
 </html>
+
+<script type="text/javascript" src="{{ url_for('static', filename = 'rainbow.js') }}"></script>

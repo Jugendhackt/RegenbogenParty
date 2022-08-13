@@ -23,7 +23,7 @@
             socket.emit("join", {"room":"moin", "username":"I Bims"});
             socket.emit("tap")
         });
-        socket.on('change', function () {
+        socket.on('change', function (data) {
             console.log("received")
         })
 

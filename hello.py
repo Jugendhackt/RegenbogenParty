@@ -21,10 +21,10 @@ from flask_socketio import join_room, leave_room
 
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
+#    username = data['username']
     room = data['room']
     join_room(room)
-    send(username + ' has entered the room.', to=room)
+    send("someone" + ' has entered the room.', to=room)
     emit("change", to=room)
 
 @socketio.on('leave')
@@ -36,7 +36,17 @@ def on_leave(data):
 
 @socketio.on('connect')
 def test_connect():
-    emit('my response', {'data': 'Connected'})
+    toSend = {
+        'frameCount': 0,
+        'lightFuncData': {
+            'identifier': 'constantColorCanvas',
+            'params': {
+                'color': '#FF80FF'
+            }
+        }
+    }
+
+    emit('update', toSend)
 
 @socketio.on('disconnect')
 def test_disconnect():
