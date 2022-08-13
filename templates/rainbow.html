@@ -15,6 +15,11 @@
     <input type="button" id="show_menu" /> <!-- onlcick: toggle show/hide menu -->
     <div id="menu">
         <!-- QR Code here -->
+        <img id="party-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example">
+        <script>
+            document.getElementById('party-qr').src = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+location.href;
+        </script>
+
         <a class="button-link" href="/">Leave room</a><!-- Leave room (back to /) here -->
     </div>
 </body>
