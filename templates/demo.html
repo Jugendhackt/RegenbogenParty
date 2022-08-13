@@ -28,10 +28,12 @@
           }
           return color;
         }
-
         function changeColor(){
             socket.emit("newColor", {"color":getRandomColor(), "room":"lol"})
         }
+        window.setInterval(function(){
+            changeColor()
+        }, 100);
         socket.on('newColor', function (){
             console.log("luul")
         })
