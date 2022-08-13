@@ -13,22 +13,30 @@
 
 <body>
     <!--<input type = "button" onclick = "sayHello()" value = "Say Hello" />-->
-    <a class="button-link" href="demo_client">Join Room</a> <!-- Open a QR Reader (app? web page?) -->
-    <a class="button-link" href="demo">Create Room</a> <!-- Go to creation room -->
-    <button onclick="sendMessage()">lol</button>
+    <button onclick="changeColor()">changeColor</button>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
     <script type="text/javascript" charset="utf-8">
-        var socket = io('wss://rainbow.jamo.app');
+        var socket = io();
         socket.on('connect', function() {
-            socket.emit("join", {"room":"moin", "username":"I Bims"});
-            socket.emit("tap")
+            socket.emit("join", {"room":"lol"});
         });
-        socket.on('change', function (data) {
-            console.log("received")
-        })
-        function sendMessage(){
-            socket.emit("change")
+        function getRandomColor() {
+          var letters = '0123456789ABCDEF';
+          var color = '#';
+          for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
         }
+        function changeColor(){
+            socket.emit("newColor", {"color":getRandomColor(), "room":"lol"})
+        }
+        window.setInterval(function(){
+            changeColor()
+        }, 100);
+        socket.on('newColor', function (){
+            console.log("luul")
+        })
     </script>
 </body>
 

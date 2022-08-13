@@ -8,7 +8,8 @@ from time import ctime
 
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+#app.debug = True
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 ntp = ntplib.NTPClient()
 roomStartTimes = dict()
@@ -23,7 +24,15 @@ def getRoomStartTime(roomID):
 
 @app.route('/')
 def index():
-    return render_template('index.html')\
+    return render_template('index.html')
+
+@app.route('/demo')
+def index1():
+    return render_template('demo.html')
+
+@app.route('/demo_client')
+def index2():
+    return render_template('demo_client.html')
 
 @app.route('/rainbow/<string:roomName>')
 def rainbow(roomName):
@@ -43,13 +52,9 @@ def on_join(data):
     send("someone" + ' has entered the room.', to=room)
     emit("change", to=room)
 
-
-@socketio.on('leave')
-def on_leave(data):
-    username = data['username']
-    room = data['room']
-    leave_room(room)
-    send(username + ' has left the room.', to=room)
+@socketio.on('newColor')
+def newColor(data):
+    emit("newColor", {"color":data["color"]}, to=data['room'])
 
 @socketio.on('connect')
 def test_connect():
@@ -73,6 +78,16 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
+@socketio.on('ntp_server')
+def test_connect():
+    recvTime = time.time()
+
+    toSend = {
+        'recvTime': recvTime,
+        'sendTime':  time.time()
+    }
+
+    emit('ntp_client', toSend)
 
 temp = 0
 def test_emit():
