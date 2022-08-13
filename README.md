@@ -13,4 +13,4 @@
 ``python -m venv ./env``
 ``source env/bin/activate`` 
 ### Setup
-``pip install -r requirements.txt``
+``pip3 install -r requirements.txt``
