@@ -10,7 +10,7 @@
 
 ## For DEVS
 ### Create a python env
-``python -m venv .``
-``source myvenv/bin/activate`` 
+``python -m venv ./env``
+``source env/bin/activate`` 
 ### Setup
 ``pip install -r requirements.txt``
