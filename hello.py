@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, send
 from flask_socketio import join_room, leave_room
 
@@ -10,8 +10,11 @@ app = Flask(__name__)
 #app.debug = True
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-roomStartTimes = dict()
 availableRooms = set()
+roomStartTimes = dict()
+roomLightFunc = dict()
+
+userRoomMap = dict()
 
 def getRoomStartTime(roomID):
     if roomID in roomStartTimes:
@@ -19,17 +22,43 @@ def getRoomStartTime(roomID):
 
     roomStartTimes[roomID] = time.time()*1000
 
+def getRoomLightFunc(roomID):
+    if roomID in roomLightFunc:
+        return roomLightFunc[roomID]
+    
+    return {
+       'identifier': 'constantColorCanvas',
+        'params': {
+            'color': '#FF0000'
+        }
+    }
+
+def updateRoomLightFunc(roomID, newLightFunc):
+    if roomExists(roomID):
+        roomLightFunc[roomID] = newLightFunc
+        roomStartTimes[roomID] = time.time()*1000
+        return True
+    return False
+
 def roomExists(roomID):
     return roomID in availableRooms
 
 def createRoom(roomID):
-    print("Hello")
-    if roomExists(roomID):
-        print("Tried to create already existing room")
-    else:
-        print("Hell2")
-        availableRooms.add(roomID)
+    availableRooms.add(roomID)
 
+def userSwitchRoom(username, roomID):
+    if username not in userRoomMap and roomID is not None:
+        userRoomMap[username] = roomID
+        return None
+    
+    if roomID is None:
+        ret = userRoomMap[username]
+        del userRoomMap[username]
+        return ret
+
+    ret = userRoomMap[username]
+    userRoomMap[username] = roomID
+    return ret
 
 @app.route('/')
 def index():
@@ -65,34 +94,29 @@ def room(roomName):
 
 @socketio.on('join')
 def on_join(data):
+    username = request.sid
     roomID = data['room']
-    print(roomID)
-    print(availableRooms)
 
     if not roomExists(roomID):
         emit('error', {'msg':'Room does not exist'})
     
     else:
+        to_leave = userSwitchRoom(username,roomID)
+        if to_leave is not None:
+            leave_room(to_leave)
+            print(str(username) + " left room "+str(to_leave))
+        
         join_room(roomID)
+        print(str(username) + " joined room "+str(roomID))
+
         toSend = {
             'startTime': getRoomStartTime(roomID),
             'frameCount': 0,
-            'lightFuncData': {
-                'identifier': 'cycleColorCanvas',
-                'params': {
-                    'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
-                }
-            }
+            'lightFuncData': getRoomLightFunc(roomID)
         }
-
         emit('update', toSend)
-        print("new user")
 
 
-
-@socketio.on('newColor')
-def newColor(data):
-    emit("newColor", {"color":data["color"]}, to=data['room'])
 
 """
 @socketio.on('connect')
@@ -117,6 +141,11 @@ def on_client_connect():
 
 @socketio.on('disconnect')
 def test_disconnect():
+    username = request.sid
+    to_leave = userSwitchRoom(username,None)
+    if to_leave is not None:
+        leave_room(to_leave)
+        print(str(username) + " left room "+str(to_leave))
     print('Client disconnected')
 
 @socketio.on('ntp_server')
@@ -129,6 +158,23 @@ def on_ntp_server():
     }
 
     emit('ntp_client', toSend)
+
+
+@socketio.on('update_room')
+def on_update_room(data):
+    roomID = data['room']
+    if not roomExists():
+        createRoom(roomID)
+    
+    updateRoomLightFunc = data['lightFuncData']
+
+    toSend = {
+        'startTime': getRoomStartTime(roomID),
+        'frameCount': 0,
+        'lightFuncData': getRoomLightFunc(roomID)
+    }
+
+    socketio.send('update', toSend, to=roomID)
 
 
 createRoom('123')

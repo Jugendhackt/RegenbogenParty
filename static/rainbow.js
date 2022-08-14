@@ -116,7 +116,7 @@ class LightScreen {
                     socket.emit("join", {"room": id});
                 }
             }(this.identifier, this.socket));
-
+        
         this.socket.on('update', this.onServerUpdate.bind(this))
 
         this.socket.on('ntp_client', this.onNTPClient.bind(this))
