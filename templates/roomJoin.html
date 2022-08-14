@@ -34,17 +34,20 @@
 
   </head>
   <body>
-    <div class="container main-wrapper">
+    <div class="col-md-4 col-md-offset-4">
+      <form>
         <div class="form-group row d-flex justify-content-center text-center">
             <div class="col-xs-2r">
               <label for="roomCode">Enter Room Code:</label>
               <input class="form-control text-center" id="roomCode" type="text">
             </div>
           </div> 
-        <div class="button-box col-lg-12">
+      </form>
+       <div class="button-box text-center">
             <button class="btn btn-default" onclick="location.href='..';">Back</button>
             <button class="btn btn-default" onclick="location.href='../rainbow/'+document.getElementById('roomCode').value;">Join</button>
      </div>
+     
     </div>
   </body>
 </html>

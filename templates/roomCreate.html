@@ -28,44 +28,78 @@
     <title>Regenbogen Party</title>
   </head>
   <body>
+    <div class="col-md-4 col-md-offset-4">
     <form>
       <div class="form-group">
         <label for="RoomCode">RoomCode: </label>
         <input type="text" class="form-control" id="roomCode" placeholder="RoomCode">
       </div>
       <div class="form-group">
-        <label for="exampleFormControlSelect2">Animation</label>
-        <select multiple class="form-control" id="exampleFormControlSelect2">
+        <label for="animationSelect">Animation:</label>
+        <select multiple class="form-control" id="animationSelect">
           <option>Rainbow</option>
           <option>ColorCycle</option>
-          <option>Constant</option>
+          <option>Red</option>
+          <option>Blue</option>
         </select>
       </div>
     </form>
-    <input id="roomCode">
-    <button onclick="update_room(1)">Eine Farbe</button>
-    <button onclick="update_room(2)">Farben Cocktail</button>
-    <button onclick="update_room(3)">Regenbogen</button>
-  </body>
+    <div class="button-box text-center">
+      <button class="btn btn-default" onclick="location.href='..';">Back</button>
+      <button class="btn btn-default" onclick="update_room();">Update</button>
+    </div>
+
   
   <script type="text/javascript" charset="utf-8">
 
     socket = io();
 
-
-
-    function update_room(){
-      let data = {
-        room: document.getElementById('roomCode').value,
-        lightFuncData: {
+    function getLightFuncData() {
+      const selectionMap = {
+        'Rainbow': {
           identifier: 'colorWheelCanvas',
+          params: {}
+        },
+        'ColorCycle': {
+          identifier: 'cycleColorCanvas',
+          params: {
+            colors: ['#FF0000', '#FF00FF', '#00FF00', '#0000FF']
+          }
+        },
+        'Red': {
+          identifier: 'constantColorCanvas',
+          params: {
+            color: '#FF0000'
+          }
+        },
+        'Blue': {
+          identifier: 'constantColorCanvas',
           params: {
             color: '#0000FF'
           }
         }
+
+      }
+      
+      let selection = document.getElementById('animationSelect').value;
+      if(!selectionMap.hasOwnProperty(selection)) {
+        console.log("Selection does not exist!");
+        return selectionMap['Red']
+      }
+      return selectionMap[selection]
+    }
+
+
+    function update_room(){
+      console.log(document.getElementById('animationSelect').value);
+
+      let data = {
+        room: document.getElementById('roomCode').value,
+        lightFuncData: getLightFuncData()
       }
 
-      console.log("Hello");
+      console.log(data);
+      console.log(data.lightFuncData);
 
       //this.socket.on('roomAvailable', redirectToRoom(data.room))
       socket.emit("update_room", data);

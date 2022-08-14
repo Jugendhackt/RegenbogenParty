@@ -27,7 +27,7 @@ function colorWheelCanvas(lightFuncParams) {
     return function (lightScreen, frameCount) {
         let prevFillStyle = lightScreen.canvasCTX.fillStyle;
 
-        lightScreen.canvasCTX.fillStyle = `hsl(${frameCount % 360}, 100%, 50%)`;
+        lightScreen.canvasCTX.fillStyle = `hsl(${2*frameCount % 360}, 100%, 50%)`;
         lightScreen.canvasCTX.fillRect(0, 0, lightScreen.canvas.width, lightScreen.canvas.height);
 
         lightScreen.canvasCTX.fillStyle = prevFillStyle;
@@ -77,7 +77,7 @@ class LightScreen {
         this.animationStart = 0;
         this.localFrameCount = 0;
         this.lightFunc = null;
-        this.FPS = 30;
+        this.FPS = 2;
         this.frameInterval = 1000 / this.FPS;
 
         // WebSocket
