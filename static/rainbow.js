@@ -1,5 +1,6 @@
 const URL = window.location.href;
 const ROOM_ID = URL.split('?')[0].split('/').pop()
+const MODI = sessionStorage.getItem('modi')
 
 
 function getNTPTime() {
@@ -127,6 +128,28 @@ class LightScreen {
         return this.socket;
     }
 
+    request_update(mode) {
+        data = get_json_for_mode()
+        this.socket.emit('update_room', data)
+    }
+
+    get_json_for_mode(modi) {
+        if (modi == 1) {
+            return {
+                'startTime': ROOM_ID,
+                'frameCount': 0,
+                'lightFuncData': {
+                    'identifier': 'SI',
+                    'params': {
+                        'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
+                    }
+                }
+            }
+        
+
+        }
+    }
+
     onServerUpdate(data) {
         this.animationStart = data.startTime;
         this.localFrameCount = data.frameCount;
@@ -190,5 +213,6 @@ class LightScreen {
 
 
 let screen = new LightScreen(ROOM_ID)
+screen.request_update(MODI)
 screen.registerCanvas('canvas')
 screen.startSynchronosAnimation()
