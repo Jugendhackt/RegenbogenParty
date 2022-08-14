@@ -2,6 +2,8 @@ version: "2"
 
 services:
   server:
-    image: "gcr.io/regenbogenparty/container:latest"
+    build:
+      context: RegenbogenParty
+      dockerfile: Dockerfile
     ports:
-      - 8080:5000
+      - 8081:5000
