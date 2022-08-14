@@ -47,17 +47,13 @@ def createRoom(roomID):
     availableRooms.add(roomID)
 
 def userSwitchRoom(username, roomID):
-    if username not in userRoomMap and roomID is not None:
-        userRoomMap[username] = roomID
-        return None
-    
-    if roomID is None:
-        ret = userRoomMap[username]
-        del userRoomMap[username]
-        return ret
+    ret = None if username not in userRoomMap else userRoomMap[username]
 
-    ret = userRoomMap[username]
-    userRoomMap[username] = roomID
+    if username in userRoomMap and roomID is None:
+        del userRoomMap[username]
+    else:
+        userRoomMap[username] = roomID
+
     return ret
 
 @app.route('/')
@@ -163,10 +159,10 @@ def on_ntp_server():
 @socketio.on('update_room')
 def on_update_room(data):
     roomID = data['room']
-    if not roomExists():
+    if not roomExists(roomID):
         createRoom(roomID)
     
-    updateRoomLightFunc = data['lightFuncData']
+    updateRoomLightFunc(roomID, data['lightFuncData'])
 
     toSend = {
         'startTime': getRoomStartTime(roomID),
@@ -174,7 +170,10 @@ def on_update_room(data):
         'lightFuncData': getRoomLightFunc(roomID)
     }
 
-    socketio.send('update', toSend, to=roomID)
+    socketio.emit('update', toSend, to=roomID)
+    
+    emit('roomAvailable')
+
 
 
 createRoom('123')
