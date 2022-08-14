@@ -120,6 +120,10 @@ class LightScreen {
 
         this.socket.on('ntp_client', this.onNTPClient.bind(this))
 
+        this.socket.on('error', function(data){
+            console.log(data.msg);
+        })
+
         return this.socket;
     }
 
@@ -141,12 +145,14 @@ class LightScreen {
         this.NTP_TIMES.server_send_time = data.sendTime; 
     
         this.offsets.push(((this.NTP_TIMES.server_recv_time - this.NTP_TIMES.client_send_time)+(this.NTP_TIMES.server_send_time - this.NTP_TIMES.client_recv_time))/2);
-        console.log(this.NTP_TIMES);
-        console.log(this.offsets);
+
 
         this.offsetN--;
         if(this.offsetN <= 0){
+            // Remove first to connections (outliers)
             this.offsets.shift()
+            this.offsets.shift()
+
             this.offset = 0
             for (let i = 0; i < this.offsets.length; i++) {
                 this.offset += this.offsets[i];
@@ -176,7 +182,7 @@ class LightScreen {
 
         let curr_server_time = Date.now()+this.offset;
         this.localFrameCount = Math.floor((curr_server_time - this.animationStart)/this.frameInterval);
-        console.log(this.localFrameCount);
+
         this.draw()
     }
 

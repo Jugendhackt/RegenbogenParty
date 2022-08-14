@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, send
-from apscheduler.schedulers.background import BackgroundScheduler
+from flask_socketio import join_room, leave_room
 
 import time
 
@@ -11,12 +11,24 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 roomStartTimes = dict()
+availableRooms = set()
 
 def getRoomStartTime(roomID):
     if roomID in roomStartTimes:
         return roomStartTimes[roomID]
 
     roomStartTimes[roomID] = time.time()*1000
+
+def roomExists(roomID):
+    return roomID in availableRooms
+
+def createRoom(roomID):
+    print("Hello")
+    if roomExists(roomID):
+        print("Tried to create already existing room")
+    else:
+        print("Hell2")
+        availableRooms.add(roomID)
 
 
 @app.route('/')
@@ -43,32 +55,54 @@ def index2():
 def rainbow(roomName):
     return render_template('rainbow.html')
 
+"""
 @app.route('/room/<string:roomName>')
 def room(roomName):
     print(roomName)
     return render_template('index.html')
+"""
 
-from flask_socketio import join_room, leave_room
 
 @socketio.on('join')
 def on_join(data):
-    room = data['room']
-    join_room(room)
-    send("someone" + ' has entered the room.', to=room)
-    emit("change", to=room)
-    print("new user")
+    roomID = data['room']
+    print(roomID)
+    print(availableRooms)
+
+    if not roomExists(roomID):
+        emit('error', {'msg':'Room does not exist'})
+    
+    else:
+        join_room(roomID)
+        toSend = {
+            'startTime': getRoomStartTime(roomID),
+            'frameCount': 0,
+            'lightFuncData': {
+                'identifier': 'cycleColorCanvas',
+                'params': {
+                    'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
+                }
+            }
+        }
+
+        emit('update', toSend)
+        print("new user")
+
+
 
 @socketio.on('newColor')
 def newColor(data):
     emit("newColor", {"color":data["color"]}, to=data['room'])
 
+"""
 @socketio.on('connect')
-def test_connect():
-    startTime = getRoomStartTime('123')
-    print(startTime)
+def on_client_connect():
+    print(data)
+    roomID = 123;#data['room']
 
+    print("Hello")
     toSend = {
-        'startTime': getRoomStartTime('123'),
+        'startTime': getRoomStartTime(roomID),
         'frameCount': 0,
         'lightFuncData': {
             'identifier': 'cycleColorCanvas',
@@ -79,13 +113,14 @@ def test_connect():
     }
 
     emit('update', toSend)
+"""
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Client disconnected')
 
 @socketio.on('ntp_server')
-def test_connect():
+def on_ntp_server():
     recvTime = time.time()*1000
 
     toSend = {
@@ -95,27 +130,9 @@ def test_connect():
 
     emit('ntp_client', toSend)
 
-temp = 0
-def test_emit():
-    global temp
 
-    toSend = {
-        'frameCount': temp,
-        'lightFuncData': {
-            'identifier': 'cycleColorCanvas',
-            'params': {
-                'colors': ['#FF0000', '#00FF00', '#0000FF', '#FF00FF'] 
-            }
-        }
-    }
+createRoom('123')
 
-    socketio.emit('update', toSend)
-
-
-    temp += 20
-
-scheduler = BackgroundScheduler()
-job = scheduler.add_job(test_emit, 'interval', seconds=1)
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0')
