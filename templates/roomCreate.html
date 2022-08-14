@@ -28,6 +28,20 @@
     <title>Regenbogen Party</title>
   </head>
   <body>
+    <form>
+      <div class="form-group">
+        <label for="RoomCode">RoomCode: </label>
+        <input type="text" class="form-control" id="roomCode" placeholder="RoomCode">
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlSelect2">Animation</label>
+        <select multiple class="form-control" id="exampleFormControlSelect2">
+          <option>Rainbow</option>
+          <option>ColorCycle</option>
+          <option>Constant</option>
+        </select>
+      </div>
+    </form>
     <input id="roomCode">
     <button onclick="update_room(1)">Eine Farbe</button>
     <button onclick="update_room(2)">Farben Cocktail</button>
@@ -36,8 +50,11 @@
   
   <script type="text/javascript" charset="utf-8">
 
-  socket = io();
-    function update_room(mode){
+    socket = io();
+
+
+
+    function update_room(){
       let data = {
         room: document.getElementById('roomCode').value,
         lightFuncData: {
@@ -50,7 +67,7 @@
 
       console.log("Hello");
 
-      this.socket.on('roomAvailable', redirectToRoom(data.room))
+      //this.socket.on('roomAvailable', redirectToRoom(data.room))
       socket.emit("update_room", data);
     }
 
