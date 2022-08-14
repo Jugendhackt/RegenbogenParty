@@ -129,7 +129,7 @@ class LightScreen {
     }
 
     request_update(mode) {
-        data = get_json_for_mode()
+        data = get_json_for_mode(mode)
         this.socket.emit('update_room', data)
     }
 

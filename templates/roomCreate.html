@@ -22,11 +22,21 @@
     </style>
      
 
+
     <title>Regenbogen Party</title>
-
-
   </head>
   <body>
-    TODO
+    <input id="roomCode">
+    <button onclick="go_to_room(1)">Eine Farbe</button>
+    <button onclick="go_to_room(2)">Farben Cocktail</button>
+    <button onclick="go_to_room(3)">Regenbogen</button>
   </body>
+  <script type="text/javascript" charset="utf-8">
+
+    function go_to_room (id){
+    sessionStorage.setItem("modi", 1);
+    location.href='../rainbow/'+document.getElementById('roomCode').value;
+    }
+
+</script>
 </html>
